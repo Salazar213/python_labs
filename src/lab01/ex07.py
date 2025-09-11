@@ -3,6 +3,7 @@ alphabet_number = "0123456789"
 stroka = input()
 no_chiper = str()
 k = 0
+
 for i in stroka:
     if i in alphabet_big:
         break
@@ -16,6 +17,4 @@ for j in range(len(stroka)):
 for l in range(0, len(stroka), shag):
     no_chiper+=stroka[l]
     
-
 print(no_chiper)
-
