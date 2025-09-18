@@ -1,1 +1,3 @@
-print(type([3, 1, 2, 1, 3]))
+a = 'gbcd'-'d'
+a = str(a.capitalize())
+print(a)

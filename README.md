@@ -82,3 +82,73 @@ print(no_chiper)
 
 ```
 ![рис.7 - пример выполнения](images/image07.png)
+
+
+
+# ** Лабораторная работа #2 **
+### Задача 1
+`min_max(nums: list[float | int]) -> tuple[float | int, float | int]`  
+   Вернуть кортеж `(минимум, максимум)`. Если список пуст — `ValueError`.
+```python
+def min_max(nums1):
+    if len(nums1) == 0 or [''] == nums1:
+        return "ValueError"
+    else:
+        miimum = min(nums1)
+        maximum = max(nums1)
+        return (miimum,maximum)
+```
+Здесь nums1 - готоый список, состоящий из `int` и/или `float` , если же требуется ввод с клавиатуры, то можно сделать так: 
+```python
+def beauty(x):
+    if '.' in x:
+        return float(x)
+    elif '' == x:
+        return x
+    else:
+        return int(x)
+
+
+spis = list(input().split(','))
+spis = list(map(beauty, spis))
+```
+Функция сохраняет исходный тип числа `int` или `float` чтобы при выводе могла вохникнуть ситуация `(-3.1, 2)` - `min` и `max` разные типы. Это - для ввода списка таким образом `3, -1 , 5, 5, 0`
+Если же мы хотим вводить с клавиатуры именно вот так `[3, -1, 5, 5, 0]` (т.е. используя `[]`  ), то тут поможет функция ```python eval```
+Вроде все случаи вводра разобрал, далее они упоминаться не будут
+Пример работы `min_max`
+![рис1 - пример min max](images/lab02/image01.png)
+
+Следующая функция 
+ `unique_sorted(nums: list[float | int]) -> list[float | int]`  
+   Вернуть **отсортированный** список **уникальных** значений (по возрастанию).
+```python
+def unique_sorted(nums2):
+    a = list()
+    if nums2 != ['']:
+        nums2 = sorted(set(nums2))
+        return nums2
+    else:
+        return a
+```
+Уникальность добивается `set`
+Пример работы `unique_sorted`
+![пример работы `unique_sorted`](images/lab02/image02.png)
+Последняя функция `flatten`
+```python
+def flatten(nums3):
+    fl = 0
+    spis = list()
+    for item in nums3:
+        if type(item) == tuple or type(item) == list:
+
+            spis.extend(item)
+        elif type(item) == str:
+            fl = 1 
+            return "TypeError"
+        else:
+            spis.append(item)
+    if fl!=1:
+        return spis
+```
+Пример работы
+![рис flatten](images/lab02/image03.png)
