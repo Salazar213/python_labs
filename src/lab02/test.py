@@ -1,3 +1,2 @@
-a = 'gbcd'-'d'
-a = str(a.capitalize())
-print(a)
+a = (10,20,30)
+print(type(a), a[0])
