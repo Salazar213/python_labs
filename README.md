@@ -223,6 +223,7 @@ def row_sums(mat2):
         return list(map(sum,mat2))
 ```
 ![сумма по строкам](images/lab02/image05.png)
+
 Следующая функция - Сумма по строкам, это просто 2 предыдущие функции
 ```python
 def col_sums(mat3):
