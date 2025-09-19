@@ -259,5 +259,5 @@ def format_record(rec):
     return ans
 ```
 Примеры выполнения программы(доп примеры для показания возможных ошибок)
-![format_record](images/lab02/images07.png)
+![format_record](images\ab02\images07.png)
 Все функции дополнительно сохранены в lib
