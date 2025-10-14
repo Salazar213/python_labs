@@ -35,7 +35,6 @@ def tokenize(text2: str) -> list[str]:
             if text2[i] in alph3:
                 text2[i] = ' '
     text2 = ''.join(text2)
-    print (text2)
     text2 = text2.split()
     i = 0
     for element in text2:
@@ -74,5 +73,3 @@ def count_freq_top(tokens: list[str]) -> dict[str, int]:
             ans.update({element : tokens.count(element)})
     return(f"Всего слов: {len(tokens)}")
     
-
-print(tokenize("hello,world!!!"))
