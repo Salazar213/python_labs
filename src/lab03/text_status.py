@@ -1,2 +1,2 @@
-from lib.text import count_freq, top_n
+from text import count_freq
 print(count_freq(["a","b","a","c","b","a"]))
