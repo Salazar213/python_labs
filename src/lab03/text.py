@@ -1,11 +1,12 @@
 import string
-def normilize (text1: str, casefold: bool = True , yo2e:bool = True)-> str:
+def normalize (text1: str, casefold: bool = True , yo2e:bool = True)-> str:
     if yo2e:
         text1 = text1.replace('ё','е')
         text1 = text1.replace("Ё","Е")
     
     if casefold == True:
         text1 = text1.casefold()
+
     text1 = ' '.join(text1.split())
     text1 = ' '.join(text1.split('\t'))
     text1 = ' '.join(text1.split('\r'))
@@ -14,7 +15,7 @@ def normilize (text1: str, casefold: bool = True , yo2e:bool = True)-> str:
     return text1
 def tokenize(text2: str) -> list[str]:
     
-    alph1 = ',./~!@#$%^&*()+!"№;%:?*()—'
+    alph1 = ',./~!@#$%^&*()<>}{=+!"№;%:?*()—'
     alph2 = "'"
     alph3 = '_-'
     alph_letters = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZАБВГДЕЁЖЗИЙКЛМНОПРСТУФХЦЧШЩЪЫЬЭЮЯабвгдеёжзийклмнопрстуфхцчшщъыьэюя0123456789'
@@ -74,4 +75,4 @@ def count_freq_top(tokens: list[str]) -> dict[str, int]:
     return(f"Всего слов: {len(tokens)}")
     
 
-print(top_n({"aa":2,"bb":2,"cc":1},3))
+print(tokenize("hello,world!!!"))
