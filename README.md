@@ -1,4 +1,4 @@
-# ** Лабораторная работа №1**
+# **Лабораторная работа №1**
 ### Задача 1
 ```python
 name = input("Имя: ")
@@ -92,7 +92,7 @@ print(no_chiper)
 
 
 
-# ** Лабораторная работа №2 **
+# **Лабораторная работа №2**
 ### Задача 1(A)
 `min_max(nums: list[float | int]) -> tuple[float | int, float | int]`  
    Вернуть кортеж `(минимум, максимум)`. Если список пуст — `ValueError`.
@@ -123,6 +123,7 @@ spis = list(map(beauty, spis))
 Если же мы хотим вводить с клавиатуры именно вот так `[3, -1, 5, 5, 0]` (т.е. используя `[]`  ), то тут поможет функция ```python eval```
 Вроде все случаи вводра разобрал, далее они упоминаться не будут
 Пример работы `min_max`
+
 ![рис1 - пример min max](images/lab02/image01.png)
 
 Следующая функция 
@@ -139,7 +140,9 @@ def unique_sorted(nums2):
 ```
 Уникальность добивается `set`
 Пример работы `unique_sorted`
+
 ![пример работы `unique_sorted`](images/lab02/image02.png)
+
 Последняя функция `flatten`
 ```python
 def flatten(nums3):
@@ -158,7 +161,9 @@ def flatten(nums3):
         return spis
 ```
 Пример работы
+
 ![рис flatten](images/lab02/image03.png)
+
 ### Задача 2 (B)
 Первая функция
 `transpose(mat: list[list[float | int]]) -> list[list]`  
@@ -192,7 +197,9 @@ def transpose(mat1):
     return rez_mat1
 ```
 Пример работы
+
 ![транс](images/lab02/image04.png)
+
 Вторая функция
 `row_sums(mat: list[list[float | int]]) -> list[float]`  
    Сумма по каждой строке. Требуется прямоугольность (см. выше).
@@ -215,12 +222,14 @@ def row_sums(mat2):
         return list(map(sum,mat2))
 ```
 ![сумма по строкам](images/lab02/image05.png)
+
 Следующая функция - Сумма по строкам, это просто 2 предыдущие функции
 ```python
 def col_sums(mat3):
     return row_sums(transpose(mat3))
 ```
 Пример выполнения
+
 ![сумма столбцов](images/lab02/image06.png)
 
 
@@ -258,6 +267,8 @@ def format_record(rec):
     ans = f"{initials}, гр. {group}, GPA {gpa:.2f}"
     return ans
 ```
+
 Примеры выполнения программы(доп примеры для показания возможных ошибок)
-![format_record](images/lab02/images07.png)
+![format_record](images/lab02/image07.png)
+
 Все функции дополнительно сохранены в lib
