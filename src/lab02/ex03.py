@@ -38,4 +38,7 @@ e = ("Петров Пётр Петрович", "", 5.0)
 f = ("Петров Пётр Петрович", "IKBO-12", "Ikbo")
 
 # print(f,format_record(f))
+
+
 print(a,format_record(a),b,format_record(b),c,format_record(c),d,format_record(d),e,format_record(e),f,format_record(f),sep='\n')
+

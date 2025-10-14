@@ -5,7 +5,7 @@ name = input("Имя: ")
 age = int(input("Возраст: "))
 print(f"Привет, {name}! Через год тебе будет {age+1}.")
 ```
-![рис. 1 — пример выполнения ](images/image01.png)
+![рис. 1 — пример выполнения ](images/lab01/image01.png)
 ### Задача 2 
 ```python
 a = float(input("a: ").replace(',','.'))
@@ -13,7 +13,7 @@ b = float(input("b: ").replace(',','.'))
 print (f"sum: {a+b:.2f} avg: {(a+b)/2:.2f}")
 ```
 Возможность вводить числа через запятую реализована с помощью ```replace```
-![рис.2 - пример выполнения](images/image02.png)
+![рис.2 - пример выполнения](images/lab01/image02.png)
 ### Задача 3
 ```python
 price = float(input("Цена: "))
@@ -27,7 +27,7 @@ print(f"НДС {vat_amount:.2f}")
 print(f"Итого к оплате {total:.2f}")
 ```
 Округение до 2 знаков реализовано с помощью ```.2f```
-![рис.3 - пример выполненяия](images/image03.png) 
+![рис.3 - пример выполненяия](images/lab01/image03.png) 
 ### Задача 4
 ```python
 m = int(input("Минуты "))
@@ -41,14 +41,14 @@ else:
 print(f"{days}\n{m//60}:{(m%60):02d}")
 ```
 Формат времени с впередистоящими нулями реализован через `:02d`
-![рис.4 - пример выполнения](images/image04.png)
+![рис.4 - пример выполнения](images/lab01/image04.png)
 ### Задача 5
 ```python
 name, surname, patronymic  = input("ФИО: ").split()
 initials = f"{name[0]}.{surname[0]}.{patronymic[0]}."
 print(f"Инициалы: {initials}\nДлина: {len(name + surname + patronymic)+2}")
 ```
-![рис.5 - пример выполнения](images/image05.png)
+![рис.5 - пример выполнения](images/lab01/image05.png)
 ### Задача 6
 
 ```python
@@ -63,7 +63,7 @@ for i in range(n):
         online+=1
 print(person, online)
 ```
-![рис.6 - пример выполнения](images/image06.png)
+![рис.6 - пример выполнения](images/lab01/image06.png)
 ### Задача 7
 ```python
 alphabet_big = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
@@ -88,7 +88,7 @@ for l in range(0, len(stroka), shag):
 print(no_chiper)
 
 ```
-![рис.7 - пример выполнения](images/image07.png)
+![рис.7 - пример выполнения](images/lab01/image07.png)
 
 
 
