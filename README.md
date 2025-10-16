@@ -272,3 +272,101 @@ def format_record(rec):
 ![format_record](images/lab02/image07.png)
 
 Все функции дополнительно сохранены в lib
+
+# **Лабораторная работа №3**
+### Задание A
+1. `normalize(text: str, *, casefold: bool = True, yo2e: bool = True) -> str`  
+   - Если `casefold=True` — привести к **casefold** (лучше, чем `lower` для Юникода).  
+   - Если `yo2e=True` — заменить все `ё`/`Ё` на `е`/`Е`.  
+   - Убрать невидимые управляющие символы (например, `\t`, `\r`) → заменить на пробелы, схлопнуть повторяющиеся пробелы в один.
+
+```python
+def normalize (text1: str, casefold: bool = True , yo2e:bool = True)-> str:
+    if yo2e:
+        text1 = text1.replace('ё','е')
+        text1 = text1.replace("Ё","Е")
+    
+    if casefold:
+        text1 = text1.casefold()
+
+    text1 = ' '.join(text1.split())
+    text1 = ' '.join(text1.split('\t'))
+    text1 = ' '.join(text1.split('\r'))
+    text1 = ' '.join(text1.split('\n'))
+
+    return text1
+```
+Тесты:
+```python
+a = "ПрИвЕт\nМИр\t"
+b = "ёжик, Ёлка"
+c = "Hello\r\nWorld"
+d = "  двойные   пробелы  "
+print(f'Строка:\n{a}\nНормализованная строка:\n{normalize(a)}\nСтрока:\n{b}\nНормализованная строка:\n{normalize(b)}\nСтрока:\n{c}\nНормализованная строка:\n{normalize(c)}\nСтрока:\n{d}\nНормализованная строка:\n{normalize(d)} ')
+```
+
+![normilize](images/lab03/image01.png)
+
+2. `tokenize(text: str) -> list[str]`  
+   - Разбить на «слова» по небуквенно-цифровым разделителям.  
+   - В качестве слова считаем последовательности символов `\w` (буквы/цифры/подчёркивание) **плюс** дефис внутри слова (например, `по-настоящему`).  
+   - Числа (например, `2025`) считаем словами.
+
+```python
+def tokenize(text2: str) -> list[str]:
+    
+    alph1 = ',./~!@#$%^&*()<>}{=+!"№;%:?*()—'
+    alph2 = "'"
+    alph3 = '_-'
+    alph_letters = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZАБВГДЕЁЖЗИЙКЛМНОПРСТУФХЦЧШЩЪЫЬЭЮЯабвгдеёжзийклмнопрстуфхцчшщъыьэюя0123456789'
+    for i in alph1:
+        text2 = text2.replace(i, ' ')
+    for j in alph2:
+        text2 = text2.replace(j, ' ')
+    text2 = [_ for _ in text2]
+    for i in range(len(text2)):
+        try:
+            if (text2[i] in alph3) and (text2[i-1] in alph_letters and text2[i+1] in alph_letters):
+                pass
+            else:
+                if text2[i] in alph3:
+                    text2[i] = ' '
+        except:
+            if text2[i] in alph3:
+                text2[i] = ' '
+    text2 = ''.join(text2)
+    text2 = text2.split()
+    i = 0
+    for element in text2:
+        
+        for letter in element:
+            if not(letter in alph_letters) and letter not in alph3:
+                element = element.replace(letter,'')
+                text2[i] = element
+        i+=1
+    text2 = [i for i in text2 if i!=""]
+    return text2
+
+```
+Тесты
+```python
+a = "привет мир"
+b = "hello,world!!!"
+c = "по-настоящему круто"
+d = "2025 год"
+e = "emoji 😀 не слово"
+
+print(f'Строка:\n{a}\nОтдельно слова:\n{tokenize(a)}\nСтрока:\n{b}\nОтдельно слова:\n{tokenize(b)}\nСтрока:\n{c}\nОтдельно слова:\n{tokenize(c)}\nСтрока:\n{d}\nОтдельно слова:\n{tokenize(d)}\nСтрока:\n{e}\Отдельно слова:\n{tokenize(e)} ')
+```
+
+![tokenize_0](images/lab03/image02.png)
+
+Дополнительные тесты:
+```python
+a = ""
+b = "😀😀😀.ha ha-ha😀😀😀😀😀"
+c = "В таком диапазоне: 2020-2025!!!!"
+-//-
+```
+
+![tonize_1](images/lab03/image03.png)
