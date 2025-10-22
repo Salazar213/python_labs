@@ -1,12 +1,12 @@
 # **Лабораторная работа №1**
-### Задача 1
+## Задача 1
 ```python
 name = input("Имя: ")
 age = int(input("Возраст: "))
 print(f"Привет, {name}! Через год тебе будет {age+1}.")
 ```
 ![рис. 1 — пример выполнения ](images/lab01/image01.png)
-### Задача 2 
+## Задача 2 
 ```python
 a = float(input("a: ").replace(',','.'))
 b = float(input("b: ").replace(',','.'))
@@ -14,7 +14,7 @@ print (f"sum: {a+b:.2f} avg: {(a+b)/2:.2f}")
 ```
 Возможность вводить числа через запятую реализована с помощью ```replace```
 ![рис.2 - пример выполнения](images/lab01/image02.png)
-### Задача 3
+## Задача 3
 ```python
 price = float(input("Цена: "))
 discount = float(input("Скидка: "))
@@ -28,7 +28,7 @@ print(f"Итого к оплате {total:.2f}")
 ```
 Округение до 2 знаков реализовано с помощью ```.2f```
 ![рис.3 - пример выполненяия](images/lab01/image03.png) 
-### Задача 4
+## Задача 4
 ```python
 m = int(input("Минуты "))
 days = 0
@@ -42,14 +42,14 @@ print(f"{days}\n{m//60}:{(m%60):02d}")
 ```
 Формат времени с впередистоящими нулями реализован через `:02d`
 ![рис.4 - пример выполнения](images/lab01/image04.png)
-### Задача 5
+## Задача 5
 ```python
 name, surname, patronymic  = input("ФИО: ").split()
 initials = f"{name[0]}.{surname[0]}.{patronymic[0]}."
 print(f"Инициалы: {initials}\nДлина: {len(name + surname + patronymic)+2}")
 ```
 ![рис.5 - пример выполнения](images/lab01/image05.png)
-### Задача 6
+## Задача 6
 
 ```python
 n = int(input("N: "))
@@ -64,7 +64,7 @@ for i in range(n):
 print(person, online)
 ```
 ![рис.6 - пример выполнения](images/lab01/image06.png)
-### Задача 7
+## Задача 7
 ```python
 alphabet_big = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
 alphabet_number = "0123456789"
@@ -93,7 +93,7 @@ print(no_chiper)
 
 
 # **Лабораторная работа №2**
-### Задача 1(A)
+## Задача 1(A)
 `min_max(nums: list[float | int]) -> tuple[float | int, float | int]`  
    Вернуть кортеж `(минимум, максимум)`. Если список пуст — `ValueError`.
 ```python
@@ -164,7 +164,7 @@ def flatten(nums3):
 
 ![рис flatten](images/lab02/image03.png)
 
-### Задача 2 (B)
+## Задача 2 (B)
 Первая функция
 `transpose(mat: list[list[float | int]]) -> list[list]`  
    Поменять строки и столбцы местами. Пустая матрица `[]` → `[]`.  
@@ -233,7 +233,7 @@ def col_sums(mat3):
 ![сумма столбцов](images/lab02/image06.png)
 
 
-### Задача 3 (C)
+## Задача 3 (C)
 Реализуйте `format_record(rec: tuple[str, str, float]) -> str`
 ```python
 def format_record(rec):
@@ -274,7 +274,7 @@ def format_record(rec):
 Все функции дополнительно сохранены в lib
 
 # **Лабораторная работа №3**
-### Задание A
+## Задание A
 1. `normalize(text: str, *, casefold: bool = True, yo2e: bool = True) -> str`  
    - Если `casefold=True` — привести к **casefold** (лучше, чем `lower` для Юникода).  
    - Если `yo2e=True` — заменить все `ё`/`Ё` на `е`/`Е`.  
@@ -282,6 +282,8 @@ def format_record(rec):
 
 ```python
 def normalize (text1: str, casefold: bool = True , yo2e:bool = True)-> str:
+    if type(text1) != str:
+        raise TypeError("Неверный тип данныхх")
     if yo2e:
         text1 = text1.replace('ё','е')
         text1 = text1.replace("Ё","Е")
@@ -370,3 +372,97 @@ c = "В таком диапазоне: 2020-2025!!!!"
 ```
 
 ![tonize_1](images/lab03/image03.png)
+
+3. `count_freq(tokens: list[str]) -> dict[str, int]`  
+   - Подсчитать частоты, вернуть словарь `слово → количество`.
+  
+```python
+def count_freq(tokens: list[str]) -> dict[str, int]:
+    ans = dict()
+    if type(tokens) != list:
+        raise TypeError(f"Не верный тип данных должно быть list, передано {type(tokens)}")
+    try:
+
+        if type(tokens[0])!=str:
+            raise TypeError(f'"Не верный тип данных должно быть list[str], передано list[{type(tokens[0])}]"')
+    except:
+        pass
+
+    try:
+        type_tokens = set(list(map(type, tokens)))
+        if len(set)!=1:
+            raise TypeError(f"Внутри списка строки разных типов данных {type_tokens}")
+    except:
+        pass
+    for element in tokens:
+        if element not in ans:
+            ans.update({element : tokens.count(element)})
+    return ans
+```
+
+```python
+def top_n(freq: dict[str, int], n: int = 5)-> list[tuple[str, int]]:
+    if  type(freq) != dict:
+        raise TypeError(f'Не верный тип данных должно быть dict, передано {type(freq)}')
+    if  type(n) != int:
+        raise TypeError(f'Не верный тип данных должно быть int, передано {type(n)}')
+    freq = sorted(freq.items(),key=lambda x: (-x[1],x[0]))
+    if n >len(freq):
+        return freq
+    else:
+        return freq[:n]
+```
+![count_frq+top_n](images/lab03/image04.png)
+
+## Задание B*
+Находится lab_03 -> text_status.py,
+При вводе табличный вывод можно включить, введя `1` stdin или выключить `0` stdin
+
+```python
+from text import count_freq, top_n,normalize,tokenize
+vhod = input("Введите текст строкой:\n")
+fl = int(input("Табличный вывод.\n 0 - выключить \n 1 - включить\n"))
+if fl!=0 and fl!=1:
+    if type(fl) == int:
+        raise ValueError("Нужно 1 или 0")
+    else:
+        raise TypeError("Нужно int")
+vhod_norm = normalize(vhod)
+vhod_tokenize = tokenize(vhod_norm)
+vhod_freq = count_freq(vhod_tokenize)
+top_5 = top_n(vhod_freq,5)
+print(f"Всего слов: {len(vhod_tokenize)}\nУникальных слов: {len(count_freq(vhod_tokenize))}\nТоп-5")
+
+len_generator = [len(i[0]) for i in top_5]
+max_len = max(len_generator)
+if max_len<=5:
+    max_len = 5
+count_generator = [len(str(i[1])) for i in top_5]
+max_count = max(count_generator)
+if max_count<=7:
+    max_count = 7
+
+if fl == 0:
+    for i in top_5:
+        slovo, count = i
+        print(f"{slovo}:{count}")
+else:
+    len_generator = [len(i[0]) for i in top_5]
+    max_len = max(len_generator)
+    if max_len<=5:
+        max_len = 5
+    count_generator = [len(str(i[1])) for i in top_5]
+    max_count = max(count_generator)
+    if max_count<=7:
+        max_count = 7
+    print(f"слово{' '*(max_len-5)}| частота{' '*(max_count-7)}")
+    print(f"{"-"*(max_len+max_count+2)}")
+    for i in top_5:
+        slovo, count = i
+        print(f"{slovo}{' '*(max_len-len(slovo))}|{count}")
+```
+![B0](images/lab03/image05.png)
+
+Если все слова маленькие, то табличный вывод такой(| ставится по уровню слово):
+![B1](images/lab03/image06.png)
+ 

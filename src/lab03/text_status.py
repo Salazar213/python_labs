@@ -1,7 +1,11 @@
 from text import count_freq, top_n,normalize,tokenize
-vhod = input("Введите текст строкой")
-fl = input("Табличный вывод.\n 0 - выключить \n 1 - включить")
-
+vhod = input("Введите текст строкой:\n")
+fl = int(input("Табличный вывод.\n 0 - выключить \n 1 - включить\n"))
+if fl!=0 and fl!=1:
+    if type(fl) == int:
+        raise ValueError("Нужно 1 или 0")
+    else:
+        raise TypeError("Нужно int")
 vhod_norm = normalize(vhod)
 vhod_tokenize = tokenize(vhod_norm)
 vhod_freq = count_freq(vhod_tokenize)
@@ -34,4 +38,4 @@ else:
     print(f"{"-"*(max_len+max_count+2)}")
     for i in top_5:
         slovo, count = i
-        print(f"{slovo}{' '*(max_len-len(slovo))}|{count}")
+        print(f"{slovo}{' '*(max_len-len(slovo))}| {count}")

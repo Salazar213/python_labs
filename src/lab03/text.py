@@ -1,5 +1,7 @@
 import string
 def normalize (text1: str, casefold: bool = True , yo2e:bool = True)-> str:
+    if type(text1) != str:
+        raise TypeError("Неверный тип данныхх")
     if yo2e:
         text1 = text1.replace('ё','е')
         text1 = text1.replace("Ё","Е")
@@ -50,6 +52,21 @@ def tokenize(text2: str) -> list[str]:
 
 def count_freq(tokens: list[str]) -> dict[str, int]:
     ans = dict()
+    if type(tokens) != list:
+        raise TypeError(f"Не верный тип данных должно быть list, передано {type(tokens)}")
+    try:
+
+        if type(tokens[0])!=str:
+            raise TypeError(f'"Не верный тип данных должно быть list[str], передано list[{type(tokens[0])}]"')
+    except:
+        pass
+
+    try:
+        type_tokens = set(list(map(type, tokens)))
+        if len(set)!=1:
+            raise TypeError(f"Внутри списка строки разных типов данных {type_tokens}")
+    except:
+        pass
     for element in tokens:
         if element not in ans:
             ans.update({element : tokens.count(element)})
@@ -57,7 +74,10 @@ def count_freq(tokens: list[str]) -> dict[str, int]:
 
 
 def top_n(freq: dict[str, int], n: int = 5)-> list[tuple[str, int]]:
-    
+    if  type(freq) != dict:
+        raise TypeError(f'Не верный тип данных должно быть dict, передано {type(freq)}')
+    if  type(n) != int:
+        raise TypeError(f'Не верный тип данных должно быть int, передано {type(n)}')
     freq = sorted(freq.items(),key=lambda x: (-x[1],x[0]))
     if n >len(freq):
         return freq
@@ -86,7 +106,7 @@ def count_freq_top(tokens: list[str]) -> dict[str, int]:
 # e = "emoji 😀 не слово"
 
 # print(f'Строка:\n{a}\nОтдельно слова:\n{tokenize(a)}\nСтрока:\n{b}\nОтдельно слова:\n{tokenize(b)}\nСтрока:\n{c}\nОтдельно слова:\n{tokenize(c)}\nСтрока:\n{d}\nОтдельно слова:\n{tokenize(d)}\nСтрока:\n{e}\nНормализованная строка:\n{tokenize(e)} ')
-a = ""
-b = "😀😀😀.ha ha-ha😀😀😀😀😀"
-c = "В таком диапазоне: 2020-2025!!!!"
-print(f'Строка:\n{a}\nОтдельно слова:\n{tokenize(a)}\nСтрока:\n{b}\nОтдельно слова:\n{tokenize(b)}\nСтрока:\n{c}\nОтдельно слова:\n{tokenize(c)}')
+# a = ""
+# b = "😀😀😀.ha ha-ha😀😀😀😀😀"
+# c = "В таком диапазоне: 2020-2025!!!!"
+# print(f'Строка:\n{a}\nОтдельно слова:\n{tokenize(a)}\nСтрока:\n{b}\nОтдельно слова:\n{tokenize(b)}\nСтрока:\n{c}\nОтдельно слова:\n{tokenize(c)}')
