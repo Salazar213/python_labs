@@ -1,5 +1,9 @@
 {
     "python.analysis.extraPaths": [
-        "./src/lib"
-    ]
+        "./src/lib",
+        "C:\\python_labs_alg\\python_labs\\src\\lib\\text.py"
+    ],
+    "terminal.integrated.env.windows": {
+        "PYTHONPATH": "${C:/python_labs_alg/python_labs}/src/lib"
+    }
 }

@@ -24,7 +24,7 @@ def read_text (path:str | Path, encoding: str = "utf-8")->str:
         raise TypeError(f"Неверный тип encoding type={type(encoding)}, должно быть str")
     path = Path(path)
         
-    if not(path.exists):
+    if not(path.exists()):
         raise FileNotFoundError('Файл не найден')
     try:
         return path.read_text(encoding=encoding)
