@@ -4,7 +4,5 @@
 # d = "  двойные   пробелы  "
 
 # print(f'Строка:\n{a}\nНормализованная строка:\n{tokenize(a)}\nСтрока:\n{b}\nНормализованная строка:\n{tokenize(b)}\nСтрока:\n{c}\nНормализованная строка:\n{tokenize(c)}\nСтрока:\n{d}\nНормализованная строка:\n{tokenize(d)} ')
-
-def proba(a:str):
-    return a 
-print(proba(int(input())))
+header=("a","b")
+print(tuple(list(map(type,header))))
