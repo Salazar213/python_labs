@@ -32,7 +32,7 @@ def read_text (path:str | Path, encoding: str = "utf-8")->str:
         raise UnicodeDecodeError("Неверная кодировка файла")
     
 
-def write_csv (rows: Iterable[Sequence], path: str | Path, header: tuple[str, ...] | None=None ) -> None:
+def write_csv (rows: Iterable[Sequence], path: str | Path, header: tuple[str, ...] | None=None, type_write: str="w" ) -> None:
     """
     Args 
         rows 
@@ -45,6 +45,7 @@ def write_csv (rows: Iterable[Sequence], path: str | Path, header: tuple[str, ..
             Необязательный заголовок, по умолчанию пуст, тип tuple[str,...]
     
     Returns 
+        None
         Записывает данные в файл в кодировке utf-8, ничего не возвращает
 
     Raises
@@ -70,7 +71,7 @@ def write_csv (rows: Iterable[Sequence], path: str | Path, header: tuple[str, ..
     
     path = Path(path)
     rows = list(rows)
-    with path.open("w", newline="", encoding="utf-8") as f:
+    with path.open(type_write, newline="", encoding="utf-8") as f:
         w = csv.writer(f)
         if header is not None:
             w.writerow(header)
@@ -93,4 +94,3 @@ def ensure_parent_dir (path: str | Path):
         raise TypeError(f"Неверный тип path type={type(path)}, должно быть str/Path")
     path.parent.mkdir(parents=True, exist_ok=True)
 
-write_csv([],"data/lab04/check.csv",header=("a","b"))  # создаст CSV
