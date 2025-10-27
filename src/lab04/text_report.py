@@ -3,7 +3,7 @@ import argparse
 from text import normalize,tokenize,count_freq,top_n
 from text import read_text, write_csv
 paths = argparse.ArgumentParser()
-paths.add_argument('--input',type=str, default="data/a.txt data/b.txt")
+paths.add_argument('--input',type=str, default="data/a.txt")
 paths.add_argument('--output',type=str,default="data/lab04/out.csv")
 paths.add_argument('--encoding', type =str, default='utf-8')
 args = paths.parse_args()
@@ -24,13 +24,14 @@ if len (path_in) !=1:
                 text_normalize = normalize(text)
                 text_tokenize = tokenize(text_normalize)
                 text_freq = count_freq(text_tokenize)
+                dict_all.append(text_freq)
+
                 top_5 = top_n(text_freq)
                 # text_freq = [(word,count) for word, count in text_freq.items()]
                 text_freq = top_n(text_freq, len(text_freq))
                 text_freq_file = list()
                 for element in text_freq:
                         text_freq_file.append((str(path.name),)+element)
-                dict_all.append(text_freq)
                 header = tuple()
                 write_csv(rows=text_freq_file, path="data/reprot_per_file.csv",type_write='a')
                 
@@ -39,3 +40,35 @@ if len (path_in) !=1:
                 # for i in top_5:
                 # slovo, count = i
                 # print(f"{slovo}:{count}")
+        result_summa_dict = {}
+        for d in dict_all:
+                for key, value in d.items():
+                        result_summa_dict[key] = result_summa_dict.get(key,0) + value
+        result_summa_dict = top_n(result_summa_dict,len(result_summa_dict))
+        write_csv(rows= result_summa_dict, path ="data/report_total.csv", header=('word','count'))
+elif len(path_in)==1:   
+        path_in=path_in[0]
+        text = read_text(path = path_in,encoding=encoding)
+        text_normalize = normalize(text)
+        text_tokenize = tokenize(text_normalize)
+        text_freq = count_freq(text_tokenize)
+        top_5 = top_n(text_freq)
+        text_freq = top_n(text_freq, len(text_freq))
+        write_csv(rows=text_freq, path=path_ou, header=('word','count'))
+        print(f"Всего слов: {len(text_tokenize)}\nУникальных слов: {len(text_freq)}\nТоп-5")
+        len_generator = [len(i[0]) for i in top_5]
+        max_len = max(len_generator)
+        if max_len<=5:
+                max_len = 5
+        count_generator = [len(str(i[1])) for i in top_5]
+        max_count = max(count_generator)
+        if max_count<=7:
+                max_count = 7
+        print(f"слово{' '*(max_len-5)}| частота{' '*(max_count-7)}")
+        print(f"{"-"*(max_len+max_count+2)}")
+        for i in top_5:
+                slovo, count = i
+                print(f"{slovo}{' '*(max_len-len(slovo))}| {count}")
+
+else:
+        write_csv(path=path_ou,rows=[],header=('word','count'))
