@@ -227,7 +227,7 @@ def read_text (path:str | Path, encoding: str = "utf-8")->str:
         raise TypeError(f"Неверный тип encoding type={type(encoding)}, должно быть str")
     path = Path(path)
         
-    if not(path.exists):
+    if not(path.exists()):
         raise FileNotFoundError('Файл не найден')
     try:
         return path.read_text(encoding=encoding)
@@ -296,5 +296,3 @@ def ensure_parent_dir (path: str | Path):
     if not(isinstance(path,(str,Path))):
         raise TypeError(f"Неверный тип path type={type(path)}, должно быть str/Path")
     path.parent.mkdir(parents=True, exist_ok=True)
-
-write_csv([],"data/lab04/check.csv",header=("a","b")) 

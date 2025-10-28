@@ -41,8 +41,9 @@ def write_csv (rows: Iterable[Sequence], path: str | Path, header: tuple[str, ..
             путь к файлу для записи - str или Path
 
         header
-    
             Необязательный заголовок, по умолчанию пуст, тип tuple[str,...]
+        type_write
+            Необязательная переменная - тип записи в функции open, значение по умолчанию "w"
     
     Returns 
         None
