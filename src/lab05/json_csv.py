@@ -1,15 +1,35 @@
 import json, csv
 from pathlib import Path
+import xlsxwriter
+
 def json_to_csv(json_path: str|Path, csv_path: str|Path) -> None:
     """
+    Args
+        json_path - путь к файлу str|Path .json из него читаем данные - список словарей
+        csv_path - путь к файлу str|Path .csv, файл может не существовать, тодгда создаём все родительские папки и сам файл
+
+    Return
+        None
+        (Создаёт файл с данными)
+
+    Raises
+
+    
     Преобразует JSON-файл в CSV.
     Поддерживает список словарей [{...}, {...}], заполняет отсутствующие поля пустыми строками.
     Кодировка UTF-8. Порядок колонок — как в первом объекте или алфавитный (указать в README).
     """
-    # Тут будут raises
-
+    
+    if not(isinstance(json_path,(str,Path))):
+        raise TypeError(f"json_path неправильнвй тип. Ожидается str|Path, передан {type(json_path)}")
+    
+    if not(isinstance(csv_path,(str,Path))):
+        raise TypeError(f"csv_path неправильнвй тип. Ожидается str|Path, передан {type(csv_path)}")
+    
 
     json_path = Path(json_path)
+    if not(json_path.exists()):
+        raise FileNotFoundError("Файл не найден")
     csv_path = Path(csv_path)
     try:
         with json_path.open(mode='r',encoding='utf-8') as f:
@@ -39,5 +59,80 @@ def json_to_csv(json_path: str|Path, csv_path: str|Path) -> None:
             writer.writerow(row)
             
 
+
+def csv_to_json(csv_path: str|Path, json_path:str|Path) -> None:
+    """
+    Преобразует CSV в JSON (список словарей).
+    Заголовок обязателен, значения сохраняются как строки.
+    json.dump(..., ensure_ascii=False, indent=2)
+    """
     
+    if not(isinstance(json_path,(str,Path))):
+        raise TypeError(f"json_path неправильнвй тип. Ожидается str|Path, передан {type(json_path)}")
     
+    if not(isinstance(csv_path,(str,Path))):
+        raise TypeError(f"csv_path неправильнвй тип. Ожидается str|Path, передан {type(csv_path)}")
+    
+
+    csv_path = Path(csv_path)
+    json_path = Path(json_path)
+    if not(csv_path.exists()):
+        raise FileNotFoundError("Файл не найден")
+    data = []
+    try:
+        with csv_path.open(mode='r',encoding='utf-8') as f:
+            reader = csv.DictReader(f)
+            if reader.fieldnames == None:
+                raise ValueError("Пустой заголовок")
+
+            if len(reader.fieldnames)!=len(set(reader.fieldnames)):
+                raise ValueError("CSV файл содержит дублирующиеся заголовки")
+            for row in reader:
+                str_row = {}
+                if any(value is not None and value.strip() != "" for value in row.values()):
+                    for key, value in row.items():
+                        if value is None:
+                            str_row[key] = ""
+                        else:
+                            str_row[key] = str(value)
+                data.append(str_row)
+
+    except:
+        raise ValueError("Не удалось прочитать csv файл")
+
+    json_path.parent.mkdir(parents=True,exist_ok=True)
+    if len(data) == 0:
+        raise ValueError("Пустой файл")
+    try:
+        with json_path.open(mode ='w',encoding='utf-8') as d:
+            json.dump(data, d, ensure_ascii=False, indent=2)
+            print("Записал")
+    except:
+        raise ValueError("Не удалось записать json")
+    
+csv_to_json('C:/python_labs_alg/python_labs/data/samples/ex.csv','C:/python_labs_alg/python_labs/data/samples/ex.json')
+
+def csv_to_xlsx(csv_path: str, xlsx_path: str) -> None:
+    """
+    Конвертирует CSV в XLSX.
+    Использовать openpyxl ИЛИ xlsxwriter.
+    Первая строка CSV — заголовок.
+    Лист называется "Sheet1".
+    Колонки — автоширина по длине текста (не менее 8 символов).
+    """
+    xlsx_path = Path(xlsx_path)
+    csv_path = Path(csv_path)
+    workbook = xlsxwriter.Workbook(xlsx_path)
+    worksheet = workbook.add_worksheet('Sheet1')
+    with csv_path.open(mode='r', encoding='utf-8') as d:
+            csv_reader = csv.reader(d)
+            for row_num, row_data in enumerate(csv_reader):
+                
+                for col_num, cell_value in enumerate(row_data):
+                    worksheet.write(row_num,col_num,cell_value)
+                    
+
+    
+    max_len = [len()]
+    worksheet.set_column(0,len(row_data)-1,8)
+
