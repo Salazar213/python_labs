@@ -559,3 +559,6 @@ def read_text (path:str | Path, encoding: str = "utf-8")->str:
 
 Вывод программы
 ![cp1251](images/lab04/image05.png)
+
+# **Лабораторная работа №5**
+## Задание A

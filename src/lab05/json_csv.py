@@ -13,6 +13,10 @@ def json_to_csv(json_path: str|Path, csv_path: str|Path) -> None:
         (Создаёт файл с данными)
 
     Raises
+        TypeError(f"json_path неправильнвй тип. Ожидается str|Path, передан {type(json_path)}")
+        TypeError(f"csv_path неправильнвй тип. Ожидается str|Path, передан {type(csv_path)}")
+        FileNotFoundError("Файл не найден")
+        raise json.JSONDecodeError(f"Ошибка чтения файла")
 
     
     Преобразует JSON-файл в CSV.
@@ -110,7 +114,6 @@ def csv_to_json(csv_path: str|Path, json_path:str|Path) -> None:
     except:
         raise ValueError("Не удалось записать json")
     
-csv_to_json('C:/python_labs_alg/python_labs/data/samples/ex.csv','C:/python_labs_alg/python_labs/data/samples/ex.json')
 
 def csv_to_xlsx(csv_path: str, xlsx_path: str) -> None:
     """
@@ -122,17 +125,30 @@ def csv_to_xlsx(csv_path: str, xlsx_path: str) -> None:
     """
     xlsx_path = Path(xlsx_path)
     csv_path = Path(csv_path)
-    workbook = xlsxwriter.Workbook(xlsx_path)
-    worksheet = workbook.add_worksheet('Sheet1')
-    with csv_path.open(mode='r', encoding='utf-8') as d:
-            csv_reader = csv.reader(d)
-            for row_num, row_data in enumerate(csv_reader):
-                
-                for col_num, cell_value in enumerate(row_data):
-                    worksheet.write(row_num,col_num,cell_value)
-                    
+    if not csv_path.exists():
+        raise FileNotFoundError(f"CSV файл не найден: {csv_path}")
+    
+    xlsx_path.parent.mkdir(parents=True,exist_ok=True)
 
     
-    max_len = [len()]
-    worksheet.set_column(0,len(row_data)-1,8)
-
+    workbook = xlsxwriter.Workbook(xlsx_path)
+    worksheet = workbook.add_worksheet('Sheet1')
+    len_col = {}
+    try:
+        with csv_path.open(mode='r', encoding='utf-8') as d:
+                csv_reader = csv.reader(d)
+                for row_num, row_data in enumerate(csv_reader):
+                    for col_num, cell_value in enumerate(row_data):
+                        worksheet.write(row_num,col_num,cell_value)
+                        if col_num in len_col:
+                            len_col[col_num] = max(len_col[col_num],len(cell_value))
+                        else:
+                            len_col[col_num] = max(8,len(cell_value))
+                        
+    except:
+        raise ValueError(f"Ошибка чтения CSV файла: {e}")
+    for col_num, max_length in len_col.items():
+        worksheet.set_column(col_num, col_num, max_length)
+    
+    workbook.close()
+csv_to_xlsx('C:/python_labs_alg/python_labs/data/samples/cities.csv','C:/python_labs_alg/python_labs/data/output/cities.xlsx')
