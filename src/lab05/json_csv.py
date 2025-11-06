@@ -184,5 +184,6 @@ def csv_to_xlsx(csv_path: str|Path, xlsx_path: str|Path) -> None:
 # csv_to_xlsx('python_labs/data/samples/people.csv','python_labs/data/samples/result/people.xlsx')
 # csv_to_xlsx('python_labs/data/samples/cities.csv','python_labs/data/samples/result/cities.xlsx')
 
-csv_to_json('python_labs/data/samples/vegetables.csv','python_labs/data/samples/result/vegetables.json')
-csv_to_xlsx('python_labs/data/samples/vegetables.csv','python_labs/data/samples/result/vegetables.xlsx')
+# csv_to_json('python_labs/data/samples/vegetables.csv','python_labs/data/samples/result/vegetables.json')
+# csv_to_xlsx('python_labs/data/samples/vegetables.csv','python_labs/data/samples/result/vegetables.xlsx')
+# csv_to_json('python_labs/data/samples/wrong.csv','python_labs/data/samples/result/wrong.json')
