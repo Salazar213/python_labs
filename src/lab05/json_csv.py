@@ -66,6 +66,24 @@ def json_to_csv(json_path: str|Path, csv_path: str|Path) -> None:
 
 def csv_to_json(csv_path: str|Path, json_path:str|Path) -> None:
     """
+    Args
+        csv_path - путь к файлу str|Path .csv из него читаем данные
+        json_path - путь к файлу str|Path .json, файл может не существовать, тогда создаём все родительские папки и сам файл
+
+    Return
+        None
+        (Создаёт файл с данными)
+
+    Raises
+        TypeError(f"json_path неправильный тип. Ожидается str|Path, передан {type(json_path)}")
+        TypeError(f"csv_path неправильный тип. Ожидается str|Path, передан {type(csv_path)}")
+        FileNotFoundError("Файл не найден")
+        ValueError("Пустой заголовок")
+        ValueError("CSV файл содержит дублирующиеся заголовки")
+        ValueError("Не удалось прочитать csv файл")
+        ValueError("Пустой файл")
+        ValueError("Не удалось записать json")
+
     Преобразует CSV в JSON (список словарей).
     Заголовок обязателен, значения сохраняются как строки.
     json.dump(..., ensure_ascii=False, indent=2)
@@ -110,13 +128,24 @@ def csv_to_json(csv_path: str|Path, json_path:str|Path) -> None:
     try:
         with json_path.open(mode ='w',encoding='utf-8') as d:
             json.dump(data, d, ensure_ascii=False, indent=2)
-            print("Записал")
     except:
         raise ValueError("Не удалось записать json")
     
 
-def csv_to_xlsx(csv_path: str, xlsx_path: str) -> None:
+def csv_to_xlsx(csv_path: str|Path, xlsx_path: str|Path) -> None:
     """
+     Args
+        csv_path - путь к файлу str|Path .csv из него читаем данные
+        xlsx_path - путь к файлу str|Path .xlsx, файл может не существовать, тогда создаём все родительские папки и сам файл
+
+    Return
+        None
+        (Создаёт файл с данными)
+
+    Raises
+        FileNotFoundError(f"CSV файл не найден: {csv_path}")
+        ValueError(f"Ошибка чтения CSV файла: {csv_path}")
+
     Конвертирует CSV в XLSX.
     Использовать openpyxl ИЛИ xlsxwriter.
     Первая строка CSV — заголовок.
@@ -129,8 +158,6 @@ def csv_to_xlsx(csv_path: str, xlsx_path: str) -> None:
         raise FileNotFoundError(f"CSV файл не найден: {csv_path}")
     
     xlsx_path.parent.mkdir(parents=True,exist_ok=True)
-
-    
     workbook = xlsxwriter.Workbook(xlsx_path)
     worksheet = workbook.add_worksheet('Sheet1')
     len_col = {}
@@ -146,9 +173,16 @@ def csv_to_xlsx(csv_path: str, xlsx_path: str) -> None:
                             len_col[col_num] = max(8,len(cell_value))
                         
     except:
-        raise ValueError(f"Ошибка чтения CSV файла: {e}")
+        raise ValueError(f"Ошибка чтения CSV файла: {csv_path}")
     for col_num, max_length in len_col.items():
         worksheet.set_column(col_num, col_num, max_length)
     
     workbook.close()
-csv_to_xlsx('C:/python_labs_alg/python_labs/data/samples/cities.csv','C:/python_labs_alg/python_labs/data/output/cities.xlsx')
+# csv_to_json('python_labs/data/samples/cities.csv','python_labs/data/samples/result/cities.json')
+# csv_to_json('python_labs/data/samples/people.csv','python_labs/data/samples/result/people.json')
+# json_to_csv('python_labs/data/samples/people.json','python_labs/data/samples/result/cities.csv')
+# csv_to_xlsx('python_labs/data/samples/people.csv','python_labs/data/samples/result/people.xlsx')
+# csv_to_xlsx('python_labs/data/samples/cities.csv','python_labs/data/samples/result/cities.xlsx')
+
+csv_to_json('python_labs/data/samples/vegetables.csv','python_labs/data/samples/result/vegetables.json')
+csv_to_xlsx('python_labs/data/samples/vegetables.csv','python_labs/data/samples/result/vegetables.xlsx')

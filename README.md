@@ -568,4 +568,89 @@ report:per_file:
 ![cp1251](images/lab04/image05.png)
 
 # **Лабораторная работа №5**
-## Задание A
+Преобразование csv <-> jscon <-> xlsx
+Докстринги к функциям
+```python
+def json_to_csv(json_path: str|Path, csv_path: str|Path) -> None:
+    """
+    Args
+        json_path - путь к файлу str|Path .json из него читаем данные - список словарей
+        csv_path - путь к файлу str|Path .csv, файл может не существовать, тодгда создаём все родительские папки и сам файл
+
+    Return
+        None
+        (Создаёт файл с данными)
+
+    Raises
+        TypeError(f"json_path неправильнвй тип. Ожидается str|Path, передан {type(json_path)}")
+        TypeError(f"csv_path неправильнвй тип. Ожидается str|Path, передан {type(csv_path)}")
+        FileNotFoundError("Файл не найден")
+        raise json.JSONDecodeError(f"Ошибка чтения файла")
+
+    
+    Преобразует JSON-файл в CSV.
+    Поддерживает список словарей [{...}, {...}], заполняет отсутствующие поля пустыми строками.
+    Кодировка UTF-8. Порядок колонок - алфавитный (указать в README).
+    """
+    
+
+def csv_to_json(csv_path: str|Path, json_path:str|Path) -> None:
+    """
+    Args
+        csv_path - путь к файлу str|Path .csv из него читаем данные
+        json_path - путь к файлу str|Path .json, файл может не существовать, тогда создаём все родительские папки и сам файл
+
+    Return
+        None
+        (Создаёт файл с данными)
+
+    Raises
+        TypeError(f"json_path неправильный тип. Ожидается str|Path, передан {type(json_path)}")
+        TypeError(f"csv_path неправильный тип. Ожидается str|Path, передан {type(csv_path)}")
+        FileNotFoundError("Файл не найден")
+        ValueError("Пустой заголовок")
+        ValueError("CSV файл содержит дублирующиеся заголовки")
+        ValueError("Не удалось прочитать csv файл")
+        ValueError("Пустой файл")
+        ValueError("Не удалось записать json")
+
+    Преобразует CSV в JSON (список словарей).
+    Заголовок обязателен, значения сохраняются как строки.
+    json.dump(..., ensure_ascii=False, indent=2)
+    """
+
+
+def csv_to_xlsx(csv_path: str|Path, xlsx_path: str|Path) -> None:
+    """
+     Args
+        csv_path - путь к файлу str|Path .csv из него читаем данные
+        xlsx_path - путь к файлу str|Path .xlsx, файл может не существовать, тогда создаём все родительские папки и сам файл
+
+    Return
+        None
+        (Создаёт файл с данными)
+
+    Raises
+        FileNotFoundError(f"CSV файл не найден: {csv_path}")
+        ValueError(f"Ошибка чтения CSV файла: {csv_path}")
+
+    Конвертирует CSV в XLSX.
+    Использовать openpyxl ИЛИ xlsxwriter.
+    Первая строка CSV — заголовок.
+    Лист называется "Sheet1".
+    Колонки — автоширина по длине текста (не менее 8 символов).
+    """
+```
+Все файлы из data/samples переведены в другие форматы и находятся в data/samples/result
+Из интересного
+-Авто ширина строк(Exel ругается на запись числе в виде текста)
+![xlsx](images/lab05/image01.png)
+-Числа, которые были числами в csv записались как строки в json, что логично
+![json](images/lab05/image02.png)
+-Запись в csv меняет порядок колонок на алфавитный(решено мной, указано в докстринге)
+![csv](images/lab05/image03.png)
+
+Сваой пример. Создан файл \dara\samples\vegetables.csv
+Из интересного - ширина в Exel не очень коректно отображается. При максимальной длине записи Центральная Россия (длина 18), устанавливается соответствующая длина 18. Но значения всё равно вылазят за пределы(видно на скрине)
+
+![xlsx_auto](images/lab05/image04.png)

@@ -1,7 +1,8 @@
 from pathlib import Path
 import argparse
-from text import normalize,tokenize,count_freq,top_n
-from text import read_text, write_csv
+from lib.text import normalize,tokenize,count_freq,top_n 
+
+from lib.text import read_text, write_csv
 paths = argparse.ArgumentParser()
 paths.add_argument('--input',type=str, default="C:/python_labs_alg/python_labs/data/a.txt",nargs='+')
 paths.add_argument('--output',type=str,default="C:/python_labs_alg/python_labs/data/out.csv")
