@@ -657,3 +657,123 @@ def csv_to_xlsx(csv_path: str|Path, xlsx_path: str|Path) -> None:
 
 А так выглядит в json(на скрине не весь файл)
 ![json_moe](images/lab05/images05)
+
+# **Лабораторная работа**
+Скрипт `cli_text.py`
+```python
+def main():
+    parser = argparse.ArgumentParser(description="CLI‑утилиты лабораторной №6")
+    subparsers = parser.add_subparsers(dest="command")
+
+    # подкоманда cat
+    cat_parser = subparsers.add_parser("cat", help="Вывести содержимое файла")
+    cat_parser.add_argument("--input", required=True)
+    cat_parser.add_argument("-n", action="store_true", help="Нумеровать строки")
+
+    # подкоманда stats
+    stats_parser = subparsers.add_parser("stats", help="Частоты слов")
+    stats_parser.add_argument("--input", required=True)
+    stats_parser.add_argument("--top", type=int, default=5)
+
+    args = parser.parse_args()
+
+    if args.command == "cat":
+        cat_input = args.input
+        cat_n = args.n
+        i_stroka = 1
+        cat_input = Path(cat_input)
+        if not(cat_input.exists()):
+            raise FileNotFoundError('Файл не найден')
+        try:
+            with cat_input.open('r',encoding = 'utf-8') as d:
+                if cat_n:
+                    for line in d.readlines():
+                        print(f'{i_stroka} строка: {line}',end='')
+                        i_stroka+=1
+                else:
+                    for line in d.readlines():
+                        print(f'{line}',end='')
+        except:
+            raise UnicodeDecodeError('Не удалось прочитать файл')
+            """ Реализация команды cat """
+    elif args.command == "stats":
+        stars_input = args.input
+        stats_top_n = args.top
+        stars_input = Path(stars_input)
+        if not(stars_input.exists()):
+            raise FileNotFoundError(f"Файл не найден по пути {stars_input}")
+        try:
+            text = read_text(path= stars_input)
+        except:
+            raise UnicodeEncodeError("Ошибка чтения файла")
+        if not(type(stats_top_n) == int):
+            raise TypeError(f"Ошибка type(n) = {type(stats_top_n)}, а должен быть int")
+
+        text_normalize = normalize(text)
+        text_tokenize = tokenize(text_normalize)
+        text_freq = count_freq(text_tokenize)
+        text_top = top_n(text_freq,stats_top_n)
+        print('word','count')
+        for word, count in text_top:
+            print(word,count)
+        """ Реализация команды stats """
+
+```
+
+Скрипт `cli_convert.py`
+```python
+def main():
+    parser = argparse.ArgumentParser(description="Конвертеры данных")
+    sub = parser.add_subparsers(dest="cmd")
+
+    p1 = sub.add_parser("json2csv",help="Конвертировать JSON в CSV")
+    p1.add_argument("--input", dest="input", required=True,help="Путь к входному JSON файлу")
+    p1.add_argument("--out", dest="output", required=True,help="Путь для сохранения CSV файла")
+
+    p2 = sub.add_parser("csv2json",help="Конвертировать CSV в JSON")
+    p2.add_argument("--input", dest="input", required=True,help="Путь к входному CSV файлу (с заголовком в первой строке)")
+    p2.add_argument("--out", dest="output", required=True,help="Путь для сохранения JSON файла")
+
+    p3 = sub.add_parser("csv2xlsx", help="Конвертировать CSV в XLSX")
+    p3.add_argument("--input", dest="input", required=True,help="Путь к входному CSV файлу")
+    p3.add_argument("--out", dest="output", required=True,help="Путь для сохранения XLSX файла")
+
+    args = parser.parse_args()
+
+    """
+        Вызываем код в зависимости от аргументов.
+    """
+    if args.cmd == "json2csv":
+        path_in = args.input
+        path_ou = Path(args.out)
+        json_to_csv(path_in,path_ou)
+
+
+    elif args.cmd == "csv2json":
+        path_in = args.input
+        path_ou = Path(args.out)
+        csv_to_json(path_in,path_ou)
+
+
+    elif args.cmd =='csv2xlsx':
+        path_in = args.input
+        path_ou = Path(args.out)
+        csv_to_xlsx(path_in,path_ou)
+```
+
+Вызов команды help для `convert` и`text`
+![help](images/lab06/image01)
+
+Пример работы `cat`
+![cat](images/lab06/image02.png)
+
+Пример рабоы `stats`
+![stats](images/lab06/image03.png)
+
+Запус всех трёх функций `cli_convert.py`
+
+![convert](images/lab06/image04.png)
+
+Результаты
+
+![result](images/lab06/image05.png)
