@@ -656,9 +656,9 @@ def csv_to_xlsx(csv_path: str|Path, xlsx_path: str|Path) -> None:
 ![xlsx_auto](images/lab05/image04.png)
 
 А так выглядит в json(на скрине не весь файл)
-![json_moe](images/lab05/images05)
+![json_moe](images/lab05/image05.png)
 
-# **Лабораторная работа**
+# **Лабораторная работа №6**
 Скрипт `cli_text.py`
 ```python
 def main():
