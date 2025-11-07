@@ -763,7 +763,8 @@ def main():
 ```
 
 Вызов команды help для `convert` и`text`
-![help](images/lab06/image01)
+
+![hel](images/lab06/image01.png)
 
 Пример работы `cat`
 ![cat](images/lab06/image02.png)
