@@ -777,3 +777,270 @@ def main():
 Результаты
 
 ![result](images/lab06/image05.png)
+
+# **Лабораторная работа #7**
+Тесты для `normalize, tokenize, count_freq, top_n`
+```python
+import pytest
+from src.lib.text import normalize, tokenize, count_freq, top_n
+
+
+# Тесты для normalize
+@pytest.mark.parametrize(
+    "source, expected",
+    [
+        ("ПрИвЕт\nМИр\t", "привет мир"),
+        ("ёжик, Ёлка", "ежик, елка"),
+        ("Hello\r\nWorld", "hello world"),
+        ("  двойные   пробелы  ", "двойные пробелы"),
+        ("", ""),
+        ("   ", ""),
+        ("ЁЖИК-ЁЖ", "ежик-еж"),
+    ],
+)
+def test_normalize_basic(source, expected):
+    assert normalize(source) == expected
+
+
+def test_normalize_without_yo2e():
+    result = normalize("ёжик", yo2e=False)
+    assert "ё" in result
+
+
+# Тесты для tokenize
+@pytest.mark.parametrize(
+    "source, expected",
+    [
+        ("привет мир", ["привет", "мир"]),
+        ("hello,world!!!", ["hello", "world"]),
+        ("по-настоящему круто", ["по-настоящему", "круто"]),
+        ("2025 год", ["2025", "год"]),
+        ("emoji 😀 не слово", ["emoji", "не", "слово"]),
+        ("", []),
+        ("!!!", []),
+        ("word1 word2-word3", ["word1", "word2-word3"]),
+    ],
+)
+def test_tokenize_basic(source, expected):
+    assert tokenize(source) == expected
+
+
+# Тесты для count_freq
+def test_count_freq_basic():
+    tokens = ["a", "b", "a", "c", "b", "a"]
+    result = count_freq(tokens)
+    expected = {"a": 3, "b": 2, "c": 1}
+    assert result == expected
+
+
+def test_count_freq_empty():
+    assert count_freq([]) == {}
+
+
+def test_count_freq_single_word():
+    assert count_freq(["test"]) == {"test": 1}
+
+
+def test_count_freq_case_sensitive():
+    tokens = ["Word", "word", "WORD"]
+    result = count_freq(tokens)
+    assert result["Word"] == 1
+    assert result["word"] == 1
+    assert result["WORD"] == 1
+
+
+# Тесты для top_n
+def test_top_n_basic():
+    freq = {"a": 3, "b": 2, "c": 1}
+    result = top_n(freq, 2)
+    expected = [("a", 3), ("b", 2)]
+    assert result == expected
+
+
+def test_top_n_tie_breaker():
+    freq = {"bb": 2, "aa": 2, "cc": 1}
+    result = top_n(freq, 2)
+    expected = [("aa", 2), ("bb", 2)]
+    assert result == expected
+
+
+def test_top_n_more_than_available():
+    # Запрашиваем больше элементов, чем есть
+    freq = {"a": 3, "b": 2}
+    result = top_n(freq, 5)
+    expected = [("a", 3), ("b", 2)]
+    assert result == expected
+
+```
+Тесты для `json_to_csv, csv_to_json`
+
+```python
+import pytest
+import json
+import csv
+from pathlib import Path
+from src.lab05.json_csv import json_to_csv, csv_to_json
+
+
+def test_json_to_csv_basic_conversion(tmp_path):
+    """Позитивный тест: корректная конвертация JSON → CSV"""
+    src_json = tmp_path / "test.json"
+    test_data = [
+        {"name": "Alice", "age": 22, "city": "Moscow"},
+        {"name": "Bob", "age": 25, "city": "SPb"},
+    ]
+
+    src_json.write_text(json.dumps(test_data, ensure_ascii=False), encoding="utf-8")
+
+    dst_csv = tmp_path / "test.csv"
+    json_to_csv(str(src_json), str(dst_csv))
+
+    assert dst_csv.exists()
+
+    with open(dst_csv, "r", encoding="utf-8") as f:
+        reader = csv.DictReader(f)
+        rows = list(reader)
+
+    assert len(rows) == len(test_data)
+    assert set(rows[0].keys()) == {"name", "age", "city"}
+    assert rows[0]["name"] == "Alice"
+    assert rows[0]["age"] == "22"
+    assert rows[1]["name"] == "Bob"
+
+
+def test_csv_to_json_basic_conversion(tmp_path):
+    """Позитивный тест: корректная конвертация CSV → JSON"""
+    src_csv = tmp_path / "test.csv"
+
+    with open(src_csv, "w", encoding="utf-8", newline="") as f:
+        writer = csv.DictWriter(f, fieldnames=["name", "age", "city"])
+        writer.writeheader()
+        writer.writerow({"name": "Alice", "age": "22", "city": "Moscow"})
+        writer.writerow({"name": "Bob", "age": "25", "city": "SPb"})
+
+    dst_json = tmp_path / "test.json"
+    csv_to_json(str(src_csv), str(dst_json))
+
+    assert dst_json.exists()
+
+    with open(dst_json, "r", encoding="utf-8") as f:
+        data = json.load(f)
+
+    assert len(data) == 2
+    assert set(data[0].keys()) == {"name", "age", "city"}
+    assert data[0]["name"] == "Alice"
+    assert data[0]["age"] == "22"
+    assert data[1]["name"] == "Bob"
+
+
+def test_json_to_csv_preserves_all_fields(tmp_path):
+    """Тест: все поля сохраняются при конвертации"""
+    src_json = tmp_path / "test.json"
+    test_data = [
+        {"name": "Alice", "age": 22, "city": "Moscow", "email": "alice@test.com"},
+        {"name": "Bob", "age": 25, "city": "SPb"},  # Отсутствует email
+    ]
+
+    src_json.write_text(json.dumps(test_data, ensure_ascii=False), encoding="utf-8")
+
+    dst_csv = tmp_path / "test.csv"
+    json_to_csv(str(src_json), str(dst_csv))
+
+    with open(dst_csv, "r", encoding="utf-8") as f:
+        reader = csv.DictReader(f)
+        rows = list(reader)
+
+    assert set(rows[0].keys()) == {"name", "age", "city", "email"}
+    assert rows[1]["email"] == ""
+
+
+def test_csv_to_json_preserves_string_values(tmp_path):
+    """Тест: значения сохраняются как строки"""
+    src_csv = tmp_path / "test.csv"
+    with open(src_csv, "w", encoding="utf-8", newline="") as f:
+        writer = csv.DictWriter(f, fieldnames=["id", "name", "score"])
+        writer.writeheader()
+        writer.writerow({"id": "001", "name": "Alice", "score": "95.5"})
+
+    dst_json = tmp_path / "test.json"
+    csv_to_json(str(src_csv), str(dst_json))
+
+    with open(dst_json, "r", encoding="utf-8") as f:
+        data = json.load(f)
+
+    assert data[0]["id"] == "001"
+    assert data[0]["name"] == "Alice"
+    assert data[0]["score"] == "95.5"
+
+
+def test_json_to_csv_roundtrip(tmp_path):
+    """Тест полного цикла: JSON → CSV → JSON"""
+    original_data = [
+        {"name": "Alice", "age": 22, "active": True},
+        {"name": "Bob", "age": 25, "active": False},
+    ]
+
+    json1 = tmp_path / "original.json"
+    csv_file = tmp_path / "converted.csv"
+    json2 = tmp_path / "final.json"
+
+    json1.write_text(json.dumps(original_data, ensure_ascii=False), encoding="utf-8")
+    json_to_csv(str(json1), str(csv_file))
+    csv_to_json(str(csv_file), str(json2))
+
+    with open(json2, "r", encoding="utf-8") as f:
+        final_data = json.load(f)
+
+    assert len(final_data) == len(original_data)
+    assert final_data[0]["name"] == original_data[0]["name"]
+    assert final_data[1]["name"] == original_data[1]["name"]
+
+
+def test_json_to_csv_invalid_json(tmp_path):
+    """Негативный тест: некорректный JSON"""
+    src_json = tmp_path / "invalid.json"
+    src_json.write_text("{invalid json}", encoding="utf-8")
+
+    dst_csv = tmp_path / "output.csv"
+
+    # Ожидаем ошибку, но не проверяем конкретный тип
+    with pytest.raises(Exception):
+        json_to_csv(str(src_json), str(dst_csv))
+
+
+def test_json_to_csv_not_list_structure(tmp_path):
+    """Негативный тест: JSON не является списком словарей"""
+    src_json = tmp_path / "not_list.json"
+    src_json.write_text('{"name": "Alice"}', encoding="utf-8")
+
+    dst_csv = tmp_path / "output.csv"
+
+    with pytest.raises(TypeError):
+        json_to_csv(str(src_json), str(dst_csv))
+
+
+def test_json_to_csv_file_not_found():
+    """Негативный тест: исходный JSON файл не существует"""
+    with pytest.raises(FileNotFoundError):
+        json_to_csv("nonexistent.json", "output.csv")
+
+
+def test_csv_to_json_file_not_found():
+    """Негативный тест: исходный CSV файл не существует"""
+    with pytest.raises(FileNotFoundError):
+        csv_to_json("nonexistent.csv", "output.json")
+
+```
+Часть результатов теста для pytest
+![pytest1](images/lab07/image01.png)
+
+![pytest2](images/lab07/image02.png)
+
+Результат для `pytest --cov=src cov-report=term-missing`
+
+![pytest_cov](images/lab07/image03.png)
+
+`io_txt_csv.py` - скрипт, `text_report.py` - скрипт, json_csv - некоторые ошибки (неверный путь) не покрыты, `cli_convert` - скрипт `cli_text` - скрипт
+Последний файл содержит функции из предыдущих лабораторных (функции работы с матрицами и тд) их тесты не заданы.
+`black`  - структура всех файлов верна
+![black](images/lab07/image04.png)

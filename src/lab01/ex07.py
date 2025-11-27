@@ -7,14 +7,14 @@ k = 0
 for i in stroka:
     if i in alphabet_big:
         break
-    k += 1 
-        
+    k += 1
+
 stroka = stroka[k:]
 for j in range(len(stroka)):
     if stroka[j] in alphabet_number:
-        shag = j+1
+        shag = j + 1
         break
 for l in range(0, len(stroka), shag):
-    no_chiper+=stroka[l]
-    
+    no_chiper += stroka[l]
+
 print(no_chiper)

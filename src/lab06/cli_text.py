@@ -2,87 +2,95 @@ import argparse
 from pathlib import Path
 
 
-def normalize (text1: str, casefold: bool = True , yo2e:bool = True)-> str:
+def normalize(text1: str, casefold: bool = True, yo2e: bool = True) -> str:
     if type(text1) != str:
         raise TypeError("Неверный тип данныхх")
     if yo2e:
-        text1 = text1.replace('ё','е')
-        text1 = text1.replace("Ё","Е")
-    
+        text1 = text1.replace("ё", "е")
+        text1 = text1.replace("Ё", "Е")
+
     if casefold:
         text1 = text1.casefold()
 
-    text1 = ' '.join(text1.split())
-    text1 = ' '.join(text1.split('\t'))
-    text1 = ' '.join(text1.split('\r'))
-    text1 = ' '.join(text1.split('\n'))
+    text1 = " ".join(text1.split())
+    text1 = " ".join(text1.split("\t"))
+    text1 = " ".join(text1.split("\r"))
+    text1 = " ".join(text1.split("\n"))
 
     return text1
+
+
 def tokenize(text2: str) -> list[str]:
-    
+
     alph1 = ',./~!@#$%^&*()<>}{=+!"№;%:?*()—'
     alph2 = "'"
-    alph3 = '_-'
-    alph_letters = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZАБВГДЕЁЖЗИЙКЛМНОПРСТУФХЦЧШЩЪЫЬЭЮЯабвгдеёжзийклмнопрстуфхцчшщъыьэюя0123456789'
+    alph3 = "_-"
+    alph_letters = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZАБВГДЕЁЖЗИЙКЛМНОПРСТУФХЦЧШЩЪЫЬЭЮЯабвгдеёжзийклмнопрстуфхцчшщъыьэюя0123456789"
     for i in alph1:
-        text2 = text2.replace(i, ' ')
+        text2 = text2.replace(i, " ")
     for j in alph2:
-        text2 = text2.replace(j, ' ')
+        text2 = text2.replace(j, " ")
     text2 = [_ for _ in text2]
     for i in range(len(text2)):
         try:
-            if (text2[i] in alph3) and (text2[i-1] in alph_letters and text2[i+1] in alph_letters):
+            if (text2[i] in alph3) and (
+                text2[i - 1] in alph_letters and text2[i + 1] in alph_letters
+            ):
                 pass
             else:
                 if text2[i] in alph3:
-                    text2[i] = ' '
+                    text2[i] = " "
         except:
             if text2[i] in alph3:
-                text2[i] = ' '
-    text2 = ''.join(text2)
+                text2[i] = " "
+    text2 = "".join(text2)
     text2 = text2.split()
     i = 0
     for element in text2:
-        
+
         for letter in element:
-            if not(letter in alph_letters) and letter not in alph3:
-                element = element.replace(letter,'')
+            if not (letter in alph_letters) and letter not in alph3:
+                element = element.replace(letter, "")
                 text2[i] = element
-        i+=1
-    text2 = [i for i in text2 if i!=""]
+        i += 1
+    text2 = [i for i in text2 if i != ""]
     return text2
 
 
 def count_freq(tokens: list[str]) -> dict[str, int]:
     ans = dict()
     if type(tokens) != list:
-        raise TypeError(f"Не верный тип данных должно быть list, передано {type(tokens)}")
+        raise TypeError(
+            f"Не верный тип данных должно быть list, передано {type(tokens)}"
+        )
     try:
 
-        if type(tokens[0])!=str:
-            raise TypeError(f'"Не верный тип данных должно быть list[str], передано list[{type(tokens[0])}]"')
+        if type(tokens[0]) != str:
+            raise TypeError(
+                f'"Не верный тип данных должно быть list[str], передано list[{type(tokens[0])}]"'
+            )
     except:
         pass
 
     try:
         type_tokens = set(list(map(type, tokens)))
-        if len(set)!=1:
+        if len(set) != 1:
             raise TypeError(f"Внутри списка строки разных типов данных {type_tokens}")
     except:
         pass
     for element in tokens:
         if element not in ans:
-            ans.update({element : tokens.count(element)})
+            ans.update({element: tokens.count(element)})
     return ans
 
 
-def top_n(freq: dict[str, int], n: int = 5)-> list[tuple[str, int]]:
-    if  type(freq) != dict:
-        raise TypeError(f'Не верный тип данных должно быть dict, передано {type(freq)}')
-    if  type(n) != int:
-        raise TypeError(f'Не верный тип данных должно быть int, передано {type(n)}')
-    freq = sorted(freq.items(),key=lambda x: (-x[1],x[0]))
-    if n >len(freq):
+def top_n(freq: dict[str, int], n: int = 5) -> list[tuple[str, int]]:
+    if type(freq) != dict:
+        raise TypeError(f"Не верный тип данных должно быть dict, передано {type(freq)}")
+    if type(n) != int:
+        raise TypeError(f"Не верный тип данных должно быть int, передано {type(n)}")
+    freq = sorted(freq.items(), key=lambda x: (-x[1], x[0]))
+    if n > len(freq):
         return freq
     else:
         return freq[:n]
@@ -93,13 +101,16 @@ def count_freq_top(tokens: list[str]) -> dict[str, int]:
     ans = dict()
     for element in tokens:
         if element not in ans:
-            ans.update({element : tokens.count(element)})
-    return(f"Всего слов: {len(tokens)}")
+            ans.update({element: tokens.count(element)})
+    return f"Всего слов: {len(tokens)}"
+
+
 from pathlib import Path
 import csv
 from typing import Iterable, Sequence
 
-def read_text (path:str | Path, encoding: str = "utf-8")->str:
+
+def read_text(path: str | Path, encoding: str = "utf-8") -> str:
     """
     Args
         path - путь к файлу str или Path
@@ -113,35 +124,40 @@ def read_text (path:str | Path, encoding: str = "utf-8")->str:
         Если кодировка не подходит UnicodeDecodeError
         Если not(isinstance(path,str,Path)), тогда  TypeError("Неверный тип path")
         Если not(isinstance(encoding,str)), тогда TypeError("Неверный тип encoding")
-    
+
     """
-    if not(isinstance(path,(str,Path))):
+    if not (isinstance(path, (str, Path))):
         raise TypeError(f"Неверный тип path type={type(path)}, должно быть str/Path")
-    if not(isinstance(encoding,str)):
+    if not (isinstance(encoding, str)):
         raise TypeError(f"Неверный тип encoding type={type(encoding)}, должно быть str")
     path = Path(path)
-        
-    if not(path.exists()):
-        raise FileNotFoundError('Файл не найден')
+
+    if not (path.exists()):
+        raise FileNotFoundError("Файл не найден")
     try:
         return path.read_text(encoding=encoding)
     except:
         raise UnicodeDecodeError("Неверная кодировка файла")
-    
 
-def write_csv (rows: Iterable[Sequence], path: str | Path, header: tuple[str, ...] | None=None, type_write: str="w" ) -> None:
+
+def write_csv(
+    rows: Iterable[Sequence],
+    path: str | Path,
+    header: tuple[str, ...] | None = None,
+    type_write: str = "w",
+) -> None:
     """
-    Args 
-        rows 
+    Args
+        rows
             данные, которые будем записывать - тип данных итерируемый объект с элементакми списками/кортежами(последовательностями)
         path
             путь к файлу для записи - str или Path
 
         header
-    
+
             Необязательный заголовок, по умолчанию пуст, тип tuple[str,...]
-    
-    Returns 
+
+    Returns
         None
         Записывает данные в файл в кодировке utf-8, ничего не возвращает
 
@@ -151,21 +167,20 @@ def write_csv (rows: Iterable[Sequence], path: str | Path, header: tuple[str, ..
         Неверный тип данных header TypeError()
         в rows есть int or str
         в header разные типы данных
-        
+
     """
-    if not(isinstance(path,(str,Path))):
+    if not (isinstance(path, (str, Path))):
         raise TypeError(f"Неверный тип path type={type(path)}, должно быть str/Path")
-    if not(isinstance(rows,Iterable)):
+    if not (isinstance(rows, Iterable)):
         raise TypeError(f"Неверный тип rows type={type(rows)}, должно быть Iterable")
-    if not(isinstance(header,(tuple))) and header!=None:
+    if not (isinstance(header, (tuple))) and header != None:
         raise TypeError(f"Неверный тип header type={type(header)}, должно быть tuple")
-    if header!=None and len(set(map(type,header)))>1 :
-         raise TypeError(f"В header разные типы данных")
+    if header != None and len(set(map(type, header))) > 1:
+        raise TypeError(f"В header разные типы данных")
     for row in rows:
-        if not(isinstance(row,Sequence)):
+        if not (isinstance(row, Sequence)):
             raise TypeError(f"Элемент rows {row} не последовательность")
-    
-    
+
     path = Path(path)
     rows = list(rows)
     with path.open(type_write, newline="", encoding="utf-8") as f:
@@ -175,19 +190,20 @@ def write_csv (rows: Iterable[Sequence], path: str | Path, header: tuple[str, ..
         for r in rows:
             w.writerow(r)
 
-def ensure_parent_dir (path: str | Path):
+
+def ensure_parent_dir(path: str | Path):
     """
     Arg
         path
             путь к файлу для записи - str или Path
     Returns
         создаёт все папки по указаному пути, ничего не возвращает
-    
+
     Raises
         Неверный тип данных path TypeError()
 
     """
-    if not(isinstance(path,(str,Path))):
+    if not (isinstance(path, (str, Path))):
         raise TypeError(f"Неверный тип path type={type(path)}, должно быть str/Path")
     path.parent.mkdir(parents=True, exist_ok=True)
 
@@ -196,7 +212,8 @@ import json, csv
 from pathlib import Path
 import xlsxwriter
 
-def json_to_csv(json_path: str|Path, csv_path: str|Path) -> None:
+
+def json_to_csv(json_path: str | Path, csv_path: str | Path) -> None:
     """
     Args
         json_path - путь к файлу str|Path .json из него читаем данные - список словарей
@@ -212,53 +229,55 @@ def json_to_csv(json_path: str|Path, csv_path: str|Path) -> None:
         FileNotFoundError("Файл не найден")
         raise json.JSONDecodeError(f"Ошибка чтения файла")
 
-    
+
     Преобразует JSON-файл в CSV.
     Поддерживает список словарей [{...}, {...}], заполняет отсутствующие поля пустыми строками.
     Кодировка UTF-8. Порядок колонок — как в первом объекте или алфавитный (указать в README).
     """
-    
-    if not(isinstance(json_path,(str,Path))):
-        raise TypeError(f"json_path неправильнвй тип. Ожидается str|Path, передан {type(json_path)}")
-    
-    if not(isinstance(csv_path,(str,Path))):
-        raise TypeError(f"csv_path неправильнвй тип. Ожидается str|Path, передан {type(csv_path)}")
-    
+
+    if not (isinstance(json_path, (str, Path))):
+        raise TypeError(
+            f"json_path неправильнвй тип. Ожидается str|Path, передан {type(json_path)}"
+        )
+
+    if not (isinstance(csv_path, (str, Path))):
+        raise TypeError(
+            f"csv_path неправильнвй тип. Ожидается str|Path, передан {type(csv_path)}"
+        )
 
     json_path = Path(json_path)
-    if not(json_path.exists()):
+    if not (json_path.exists()):
         raise FileNotFoundError("Файл не найден")
     csv_path = Path(csv_path)
     try:
-        with json_path.open(mode='r',encoding='utf-8') as f:
+        with json_path.open(mode="r", encoding="utf-8") as f:
             data = json.load(f)
     except:
         raise json.JSONDecodeError(f"Ошибка чтения файла")
-    
+
     if not isinstance(data, list):
         raise TypeError(f"JSON должен содержать list")
-    
-    if len(data)==0:
+
+    if len(data) == 0:
         raise ValueError("Пустой JSON файл")
-    if not all(isinstance(item,dict) for item in data):
+    if not all(isinstance(item, dict) for item in data):
         raise TypeError("Все элементы JSON должны быть словарями")
-    
+
     all_keys = set()
     for item in data:
         all_keys.update(item.keys())
 
     field_names = sorted(all_keys)
     csv_path.parent.mkdir(parents=True, exist_ok=True)
-    with csv_path.open(mode='w', encoding='utf-8',newline='') as d:
+    with csv_path.open(mode="w", encoding="utf-8", newline="") as d:
         writer = csv.DictWriter(d, fieldnames=field_names)
         writer.writeheader()
         for item in data:
-            row = {key:item.get(key,'')for key in field_names}
+            row = {key: item.get(key, "") for key in field_names}
             writer.writerow(row)
-            
 
 
-def csv_to_json(csv_path: str|Path, json_path:str|Path) -> None:
+def csv_to_json(csv_path: str | Path, json_path: str | Path) -> None:
     """
     Args
         csv_path - путь к файлу str|Path .csv из него читаем данные
@@ -282,30 +301,35 @@ def csv_to_json(csv_path: str|Path, json_path:str|Path) -> None:
     Заголовок обязателен, значения сохраняются как строки.
     json.dump(..., ensure_ascii=False, indent=2)
     """
-    
-    if not(isinstance(json_path,(str,Path))):
-        raise TypeError(f"json_path неправильнвй тип. Ожидается str|Path, передан {type(json_path)}")
-    
-    if not(isinstance(csv_path,(str,Path))):
-        raise TypeError(f"csv_path неправильнвй тип. Ожидается str|Path, передан {type(csv_path)}")
-    
+
+    if not (isinstance(json_path, (str, Path))):
+        raise TypeError(
+            f"json_path неправильнвй тип. Ожидается str|Path, передан {type(json_path)}"
+        )
+
+    if not (isinstance(csv_path, (str, Path))):
+        raise TypeError(
+            f"csv_path неправильнвй тип. Ожидается str|Path, передан {type(csv_path)}"
+        )
 
     csv_path = Path(csv_path)
     json_path = Path(json_path)
-    if not(csv_path.exists()):
+    if not (csv_path.exists()):
         raise FileNotFoundError("Файл не найден")
     data = []
     try:
-        with csv_path.open(mode='r',encoding='utf-8') as f:
+        with csv_path.open(mode="r", encoding="utf-8") as f:
             reader = csv.DictReader(f)
             if reader.fieldnames == None:
                 raise ValueError("Пустой заголовок")
 
-            if len(reader.fieldnames)!=len(set(reader.fieldnames)):
+            if len(reader.fieldnames) != len(set(reader.fieldnames)):
                 raise ValueError("CSV файл содержит дублирующиеся заголовки")
             for row in reader:
                 str_row = {}
-                if any(value is not None and value.strip() != "" for value in row.values()):
+                if any(
+                    value is not None and value.strip() != "" for value in row.values()
+                ):
                     for key, value in row.items():
                         if value is None:
                             str_row[key] = ""
@@ -316,17 +340,17 @@ def csv_to_json(csv_path: str|Path, json_path:str|Path) -> None:
     except:
         raise ValueError("Не удалось прочитать csv файл")
 
-    json_path.parent.mkdir(parents=True,exist_ok=True)
+    json_path.parent.mkdir(parents=True, exist_ok=True)
     if len(data) == 0:
         raise ValueError("Пустой файл")
     try:
-        with json_path.open(mode ='w',encoding='utf-8') as d:
+        with json_path.open(mode="w", encoding="utf-8") as d:
             json.dump(data, d, ensure_ascii=False, indent=2)
     except:
         raise ValueError("Не удалось записать json")
-    
 
-def csv_to_xlsx(csv_path: str|Path, xlsx_path: str|Path) -> None:
+
+def csv_to_xlsx(csv_path: str | Path, xlsx_path: str | Path) -> None:
     """
      Args
         csv_path - путь к файлу str|Path .csv из него читаем данные
@@ -350,29 +374,30 @@ def csv_to_xlsx(csv_path: str|Path, xlsx_path: str|Path) -> None:
     csv_path = Path(csv_path)
     if not csv_path.exists():
         raise FileNotFoundError(f"CSV файл не найден: {csv_path}")
-    
-    xlsx_path.parent.mkdir(parents=True,exist_ok=True)
+
+    xlsx_path.parent.mkdir(parents=True, exist_ok=True)
     workbook = xlsxwriter.Workbook(xlsx_path)
-    worksheet = workbook.add_worksheet('Sheet1')
+    worksheet = workbook.add_worksheet("Sheet1")
     len_col = {}
     try:
-        with csv_path.open(mode='r', encoding='utf-8') as d:
-                csv_reader = csv.reader(d)
-                for row_num, row_data in enumerate(csv_reader):
-                    for col_num, cell_value in enumerate(row_data):
-                        worksheet.write(row_num,col_num,cell_value)
-                        if col_num in len_col:
-                            len_col[col_num] = max(len_col[col_num],len(cell_value))
-                        else:
-                            len_col[col_num] = max(8,len(cell_value))
-                        
+        with csv_path.open(mode="r", encoding="utf-8") as d:
+            csv_reader = csv.reader(d)
+            for row_num, row_data in enumerate(csv_reader):
+                for col_num, cell_value in enumerate(row_data):
+                    worksheet.write(row_num, col_num, cell_value)
+                    if col_num in len_col:
+                        len_col[col_num] = max(len_col[col_num], len(cell_value))
+                    else:
+                        len_col[col_num] = max(8, len(cell_value))
+
     except:
         raise ValueError(f"Ошибка чтения CSV файла: {csv_path}")
     for col_num, max_length in len_col.items():
         worksheet.set_column(col_num, col_num, max_length)
-    
+
     workbook.close()
-    
+
+
 def main():
     parser = argparse.ArgumentParser(description="CLI‑утилиты лабораторной №6")
     subparsers = parser.add_subparsers(dest="command")
@@ -394,40 +419,41 @@ def main():
         cat_n = args.n
         i_stroka = 1
         cat_input = Path(cat_input)
-        if not(cat_input.exists()):
-            raise FileNotFoundError('Файл не найден')
+        if not (cat_input.exists()):
+            raise FileNotFoundError("Файл не найден")
         try:
-            with cat_input.open('r',encoding = 'utf-8') as d:
+            with cat_input.open("r", encoding="utf-8") as d:
                 if cat_n:
                     for line in d.readlines():
-                        print(f'{i_stroka} строка: {line}',end='')
-                        i_stroka+=1
+                        print(f"{i_stroka} строка: {line}", end="")
+                        i_stroka += 1
                 else:
                     for line in d.readlines():
-                        print(f'{line}',end='')
+                        print(f"{line}", end="")
         except:
-            raise UnicodeDecodeError('Не удалось прочитать файл')
+            raise UnicodeDecodeError("Не удалось прочитать файл")
             """ Реализация команды cat """
     elif args.command == "stats":
         stars_input = args.input
         stats_top_n = args.top
         stars_input = Path(stars_input)
-        if not(stars_input.exists()):
+        if not (stars_input.exists()):
             raise FileNotFoundError(f"Файл не найден по пути {stars_input}")
         try:
-            text = read_text(path= stars_input)
+            text = read_text(path=stars_input)
         except:
             raise UnicodeEncodeError("Ошибка чтения файла")
-        if not(type(stats_top_n) == int):
+        if not (type(stats_top_n) == int):
             raise TypeError(f"Ошибка type(n) = {type(stats_top_n)}, а должен быть int")
 
         text_normalize = normalize(text)
         text_tokenize = tokenize(text_normalize)
         text_freq = count_freq(text_tokenize)
-        text_top = top_n(text_freq,stats_top_n)
-        print('word','count')
+        text_top = top_n(text_freq, stats_top_n)
+        print("word", "count")
         for word, count in text_top:
-            print(word,count)
+            print(word, count)
         """ Реализация команды stats """
+
 
 main()

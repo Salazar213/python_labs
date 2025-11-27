@@ -1,0 +1,21 @@
+[build-system]
+requires = ["setuptools"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "project-name"
+dependencies = ["requests>=2.32"]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=8.0.0",
+    "pytest-cov>=5.0.0", 
+    "black>=24.0.0",
+    "xlsxwriter>=3.0.0",
+]
+
+[tool.black]
+line-length = 88
+
+[tool.pytest.ini_options]
+pythonpath = ["src"]

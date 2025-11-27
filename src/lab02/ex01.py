@@ -1,22 +1,23 @@
 def min_max(nums1):
-    if len(nums1) == 0 or [''] == nums1:
+    if len(nums1) == 0 or [""] == nums1:
         return "ValueError"
     else:
         miimum = min(nums1)
         maximum = max(nums1)
-        return (miimum,maximum)
+        return (miimum, maximum)
 
 
 def unique_sorted(nums2):
     # nums2 = list(input().split(','))
     # nums2 = list(map(beauty, spis))
     a = list()
-    if nums2 != ['']:
+    if nums2 != [""]:
         nums2 = list(set(list(nums2)))
         return nums2
     else:
         return a
-    
+
+
 def flatten(nums3):
     fl = 0
     spis = list()
@@ -25,23 +26,22 @@ def flatten(nums3):
 
             spis.extend(item)
         elif type(item) == str:
-            fl = 1 
+            fl = 1
             return "TypeError"
         else:
             spis.append(item)
-    if fl!=1:
+    if fl != 1:
         return spis
 
 
-
 def beauty(x):
-    if '.' in x:
+    if "." in x:
         return float(x)
-    elif '' == x:
+    elif "" == x:
         return x
     else:
         return int(x)
-    
+
 
 # print(f"{flatten([[1, 2], "ab"])}")
 
