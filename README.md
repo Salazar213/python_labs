@@ -867,7 +867,6 @@ def test_top_n_tie_breaker():
 
 
 def test_top_n_more_than_available():
-    # Запрашиваем больше элементов, чем есть
     freq = {"a": 3, "b": 2}
     result = top_n(freq, 5)
     expected = [("a", 3), ("b", 2)]
@@ -940,7 +939,7 @@ def test_json_to_csv_preserves_all_fields(tmp_path):
     src_json = tmp_path / "test.json"
     test_data = [
         {"name": "Alice", "age": 22, "city": "Moscow", "email": "alice@test.com"},
-        {"name": "Bob", "age": 25, "city": "SPb"},  # Отсутствует email
+        {"name": "Bob", "age": 25, "city": "SPb"}, 
     ]
 
     src_json.write_text(json.dumps(test_data, ensure_ascii=False), encoding="utf-8")
@@ -1005,7 +1004,6 @@ def test_json_to_csv_invalid_json(tmp_path):
 
     dst_csv = tmp_path / "output.csv"
 
-    # Ожидаем ошибку, но не проверяем конкретный тип
     with pytest.raises(Exception):
         json_to_csv(str(src_json), str(dst_csv))
 
