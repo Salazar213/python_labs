@@ -780,7 +780,7 @@ def main():
 
 ![result](images/lab06/image05.png)
 
-# **Лабораторная работа #7**
+# **Лабораторная работа №7**
 Тесты для `normalize, tokenize, count_freq, top_n`
 ```python
 import pytest
