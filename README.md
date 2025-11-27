@@ -656,7 +656,8 @@ def csv_to_xlsx(csv_path: str|Path, xlsx_path: str|Path) -> None:
 ![xlsx_auto](images/lab05/image04.png)
 
 А так выглядит в json(на скрине не весь файл)
-![json_moe](images/lab05/image05.png)
+
+![im](images/lab05/image05.png)
 
 # **Лабораторная работа №6**
 Скрипт `cli_text.py`
@@ -762,7 +763,8 @@ def main():
 ```
 
 Вызов команды help для `convert` и`text`
-![help](images/lab06/image01)
+
+![hel](images/lab06/image01.png)
 
 Пример работы `cat`
 ![cat](images/lab06/image02.png)
