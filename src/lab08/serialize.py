@@ -60,7 +60,3 @@ def read_json_file(file_path: str | Path) -> Dict[str, Any]:
     
     except:
         raise json.JSONDecodeError(f"Ошибка декодирования JSON в файле {file_path}")
-
-# for s in read_json_file("C:/python_labs_alg/python_labs/data/lab08/students_input.json"):
-#     print(s)
-students_to_json(read_json_file("C:/python_labs_alg/python_labs/data/lab08/students_input.json"),"C:/python_labs_alg/python_labs/data/lab08/students_output.json")
