@@ -1044,3 +1044,131 @@ def test_csv_to_json_file_not_found():
 Последний файл содержит функции из предыдущих лабораторных (функции работы с матрицами и тд) их тесты не заданы.
 `black`  - структура всех файлов верна
 ![black](images/lab07/image04.png)
+
+# **Лабораторная работа №8**
+
+`models`
+```python
+from dataclasses import dataclass
+from datetime import *
+
+
+@dataclass
+class Student:
+    fio: str
+    birthdate: str
+    group: str
+    gpa: float
+
+    def __post_init__(self):
+        try:
+            birth = datetime.strptime(self.birthdate, "%Y-%m-%d")
+            if birth > datetime.now():
+                raise ValueError("Дата рождения в будущем")
+        except ValueError:
+            raise ValueError("warning: birthdate format might be invalid")
+        if not (0 <= self.gpa <= 5):
+            raise ValueError("gpa must be between 0 and 5")
+
+    def age(self) -> int:
+        today = datetime.now()
+        birth = datetime.strptime(self.birthdate, "%Y-%m-%d")
+        age = today.year - birth.year
+        if (today.month, today.day) < (birth.month, birth.day):
+            age -= 1
+        return age
+
+    def to_dict(self) -> dict:
+        return {
+            "fio": self.fio,
+            "birthdate": self.birthdate,
+            "group": self.group,
+            "gpa": self.gpa,
+        }
+
+    @classmethod
+    def from_dict(cls, d: dict):
+        return cls(**d)
+
+    def __str__(self):
+        return f"Студент: {self.fio}\nГруппа: {self.group}\nGPA: {self.gpa:.2f}"
+```
+Пример создания класса и вызова методов
+![student1](images/lab08/image03.png)
+
+![age](images/lab08/image02.png)
+
+![dict](images/lab08/image03.png)
+
+`serialize`
+```python
+from models import Student
+import json
+from typing import Any, Dict
+from pathlib import Path
+def students_to_json(students:list[Dict],path):
+    """
+    Записывает в json файл(путь - path) список студентов
+    
+    Args:
+        students - список словарей
+        path - путь к файлу json
+    """
+    path = Path(path)
+    if not(isinstance(students,(list,dict))):
+        raise TypeError("students не список словарей/словарь")
+    if isinstance(students,dict):
+        students = list(students)
+
+
+    data = [s.to_dict() for s in students]
+    path.parent.mkdir(parents=True, exist_ok=True)
+
+    with path.open(mode="w", encoding="utf-8") as d:
+            json.dump(data, d, ensure_ascii=False, indent=2)
+
+def read_json_file(file_path: str | Path) -> Dict[str, Any]:
+    """
+    Читает JSON файл и возвращает его содержимое в виде словаря.
+    
+    Args:
+        file_path: Путь к JSON файлу (строка или объект Path)
+    
+    Returns:
+        Словарь с данными из JSON файла
+    
+    Raises:
+        FileNotFoundError: Если файл не существует
+        json.JSONDecodeError: Если файл содержит невалидный JSON
+        ValueError: путь не ведёт к файлу
+        TypeError: файл не полностью состоит из словарей
+    """
+    students = []
+    try:
+        path = Path(file_path)
+        if not path.exists():
+            raise FileNotFoundError(f"Файл не найден: {file_path}")
+        
+        if not path.is_file():
+            raise ValueError(f"Указанный путь не является файлом: {file_path}")
+        
+        with open(path, 'r', encoding='utf-8') as file:
+            data = json.load(file)
+        
+        for item in data:
+            if not isinstance(item, dict):
+                raise TypeError("Каждый элемент массива должен быть объектом.")
+            students.append(Student.from_dict(item))
+
+        return students
+    
+    except:
+        raise json.JSONDecodeError(f"Ошибка декодирования JSON в файле {file_path}")
+```
+Проверяем, что `students_to_json` и `read_json_file` работают корректно - совпадёт ли входной файл с выходным, если мы сначала его прочитаем, а потом запишем
+```python
+students_to_json(read_json_file("C:/python_labs_alg/python_labs/data/lab08/students_input.json"),"C:/python_labs_alg/python_labs/data/lab08/students_output.json")
+```
+![read,json](images/lab08/image04.png)
+
+Всё совпало 
